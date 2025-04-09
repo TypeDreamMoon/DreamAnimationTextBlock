@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "DreamTextLine.generated.h"
 
+class UWrapBox;
 class UHorizontalBox;
 class UDreamTextChar;
 /**
@@ -19,17 +20,23 @@ class DREAMANIMATIONTEXTBLOCK_API UDreamTextLine : public UUserWidget
 
 public:
 	UPROPERTY(Meta = (BindWidget))
-	UHorizontalBox* HorizontalBox;
+	UWrapBox* WrapBox;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftClassPtr<UDreamTextChar> CharWidgetClass = UDreamTextChar::StaticClass();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSlateFontInfo Font;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDreamTextBlockAnimationSetting* AnimationSetting;
 public:
 	UFUNCTION(BlueprintCallable)
 	UDreamTextChar* PushChar(FString Char);
 
 	UFUNCTION(BlueprintCallable)
 	void SetFont(FSlateFontInfo InFont);
+
+	UFUNCTION(BlueprintCallable)
+	void SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting);
 };

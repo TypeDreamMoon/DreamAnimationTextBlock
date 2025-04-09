@@ -21,9 +21,6 @@ public:
 	UVerticalBox* VerticalBox = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString EnterText = "/";
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftClassPtr<UDreamTextLine> LineWidgetClass = UDreamTextLine::StaticClass();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -37,13 +34,28 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Text = FText::FromString(TEXT("TextBlock"));
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString EnterText = "/";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSlateFontInfo Font;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDreamTextBlockAnimationSetting* AnimationSetting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AnimationDuration = 5.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CharAnimationDuration = 0.5f;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetText(FText InText);
+
+	UFUNCTION(BlueprintCallable)
+	void PlayAnim();
 
 protected:
 	virtual void NativePreConstruct() override;
