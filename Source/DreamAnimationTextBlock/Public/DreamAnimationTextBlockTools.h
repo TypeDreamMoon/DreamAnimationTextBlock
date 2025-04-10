@@ -1,53 +1,93 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "TimerManager.h"
 
-struct DREAMANIMATIONTEXTBLOCK_API FDreamAnimationTextBlockTools
+namespace FDreamAnimationTextBlockTools
 {
-public:
-	// TODO : 这里遍历有些问题 只能访问前两个元素 待解决 BUG
+	struct DREAMANIMATIONTEXTBLOCK_API FDelayStateBase
+	{
+		TWeakObjectPtr<UObject> WorldContextObject;
+		float Delay = 0.f;
+		int32 Index = 0;
+		bool bCanceled = false;
+	};
+
 	template <typename TArrayType, typename ElementType>
-	static void ForEachWithDelay(
+	struct TDelayState : public FDelayStateBase
+	{
+		const TArrayType* ArrayPtr = nullptr;
+		TFunction<void(ElementType)> Callback;
+
+		void ProcessNext(TSharedRef<TDelayState> Self, FTimerHandle& TimerHandle)
+		{
+			if (bCanceled || !WorldContextObject.IsValid() || !ArrayPtr || Index >= ArrayPtr->Num())
+				return;
+
+			Callback((*ArrayPtr)[Index]);
+			Index++;
+
+			if (Index >= ArrayPtr->Num() || bCanceled) return;
+
+			if (UWorld* World = WorldContextObject->GetWorld())
+			{
+				World->GetTimerManager().SetTimer(
+					TimerHandle,
+					FTimerDelegate::CreateLambda([Self, &TimerHandle]()
+					{
+						Self->ProcessNext(Self, TimerHandle);
+					}),
+					Delay,
+					false
+				);
+			}
+		}
+	};
+
+	// 泛型控制器，持有状态和定时器
+	struct DREAMANIMATIONTEXTBLOCK_API FForEachWithDelayHandle
+	{
+		FTimerHandle TimerHandle;
+		TSharedPtr<FDelayStateBase> State;
+
+		void Stop()
+		{
+			if (State.IsValid())
+			{
+				State->bCanceled = true;
+				if (UWorld* World = State->WorldContextObject->GetWorld())
+				{
+					World->GetTimerManager().ClearTimer(TimerHandle);
+				}
+			}
+		}
+	};
+
+	template <typename TArrayType, typename ElementType>
+	static FForEachWithDelayHandle ForEachWithDelay(
 		UObject* WorldContextObject,
 		const TArrayType& Array,
 		float DelayBetweenElements,
 		TFunction<void(ElementType)> OnElementProcessed
 	)
 	{
-		if (!WorldContextObject || !WorldContextObject->GetWorld()) return;
+		FForEachWithDelayHandle Handle;
 
-		// 使用共享指针管理状态
-		struct FDelayState
+		if (!WorldContextObject || !WorldContextObject->GetWorld() || Array.Num() == 0)
 		{
-			int32 CurrentIndex = 0;
-			FTimerHandle TimerHandle;
-			TFunction<void()> ProcessNext; // 将ProcessNext移至状态结构
-		};
+			return Handle;
+		}
 
-		TSharedPtr<FDelayState> State = MakeShared<FDelayState>();
+		TSharedRef<TDelayState<TArrayType, ElementType>> State = MakeShared<TDelayState<TArrayType, ElementType>>();
+		State->WorldContextObject = WorldContextObject;
+		State->ArrayPtr = &Array;
+		State->Callback = OnElementProcessed;
+		State->Delay = DelayBetweenElements;
+		State->Index = 0;
 
-		// 定义处理逻辑
-		State->ProcessNext = [WorldContextObject, &Array, DelayBetweenElements, OnElementProcessed, State]()
-		{
-			if (State->CurrentIndex >= Array.Num()) return;
+		Handle.State = StaticCastSharedRef<FDelayStateBase>(State);
+		State->ProcessNext(State, Handle.TimerHandle);
 
-			// 处理当前元素
-			OnElementProcessed(Array[State->CurrentIndex]);
-			State->CurrentIndex++;
-
-			// 设置下一个元素的定时器
-			if (State->CurrentIndex < Array.Num())
-			{
-				WorldContextObject->GetWorld()->GetTimerManager().SetTimer(
-					State->TimerHandle,
-					MoveTemp(State->ProcessNext), // 关键修改：转换为右值引用
-					DelayBetweenElements,
-					false
-				);
-			}
-		};
-
-		// 启动第一个元素
-		State->ProcessNext();
+		return Handle;
 	}
 };

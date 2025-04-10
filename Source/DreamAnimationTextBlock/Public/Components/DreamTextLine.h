@@ -26,17 +26,30 @@ public:
 	TSoftClassPtr<UDreamTextChar> CharWidgetClass = UDreamTextChar::StaticClass();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FSlateFontInfo Font;
+	FSlateFontInfo Font = FSlateFontInfo();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDreamTextBlockAnimationSetting* AnimationSetting;
+	UDreamTextBlockAnimationSetting* AnimationSetting = nullptr;
 public:
+	/**
+	 * 推送字符
+	 * @param Char 字符
+	 * @return 创建的字符控件
+	 */
 	UFUNCTION(BlueprintCallable)
 	UDreamTextChar* PushChar(FString Char);
 
+	/**
+	 * 设置字体
+	 * @param InFont 新的字体
+	 */
 	UFUNCTION(BlueprintCallable)
 	void SetFont(FSlateFontInfo InFont);
 
+	/**
+	 * 设置动画设置
+	 * @param InAnimationSetting 动画设置
+	 */
 	UFUNCTION(BlueprintCallable)
 	void SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting);
 };

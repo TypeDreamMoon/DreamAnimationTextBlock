@@ -18,14 +18,14 @@ class DREAMANIMATIONTEXTBLOCK_API UDreamTextBlockAnimationSetting : public UPrim
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDreamTextAnimationSet Start;
+	FDreamTextAnimationSet Start = FDreamTextAnimationSet();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDreamTextAnimationSet End;
+	FDreamTextAnimationSet End = FDreamTextAnimationSet();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ELTweenEase Ease = ELTweenEase::OutCubic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (EditCondition = "Ease==ELTweenEase::CurveFloat", EditConditionHides))
-	UCurveFloat* CurveFloat;
+	UCurveFloat* CurveFloat = nullptr;
 };
