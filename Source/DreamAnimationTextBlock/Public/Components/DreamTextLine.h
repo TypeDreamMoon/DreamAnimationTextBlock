@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright (c) 2022 Dream Moon. All Rights Reserved.
 
 #pragma once
 
@@ -8,7 +8,6 @@
 #include "DreamTextLine.generated.h"
 
 class UWrapBox;
-class UHorizontalBox;
 class UDreamTextChar;
 /**
  * 
@@ -30,14 +29,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDreamTextBlockAnimationSetting* AnimationSetting = nullptr;
+
 public:
 	/**
 	 * 推送字符
 	 * @param Char 字符
+	 * @param bInitializeAnimation 是否初始化动画
 	 * @return 创建的字符控件
 	 */
 	UFUNCTION(BlueprintCallable)
-	UDreamTextChar* PushChar(FString Char);
+	UDreamTextChar* PushChar(FString Char, bool bInitializeAnimation = false);
 
 	/**
 	 * 设置字体

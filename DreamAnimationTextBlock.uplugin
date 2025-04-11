@@ -1,13 +1,13 @@
-﻿{
+{
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "1.0.0",
 	"FriendlyName": "DreamAnimationTextBlock",
-	"Description": "",
-	"Category": "Other",
-	"CreatedBy": "",
-	"CreatedByURL": "",
-	"DocsURL": "",
+	"Description": "Animation Text Block Widget, this plugin requires the LTween plugin.",
+	"Category": "DreamPlugin",
+	"CreatedBy": "Dream Moon",
+	"CreatedByURL": "https://github.com/TypeDreamMoon/DreamAnimationTextBlock",
+	"DocsURL": "https://github.com/TypeDreamMoon/DreamAnimationTextBlock",
 	"MarketplaceURL": "",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
@@ -18,6 +18,13 @@
 			"Name": "DreamAnimationTextBlock",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		}
+	],
+	"SupportURL": "https://github.com/TypeDreamMoon/DreamAnimationTextBlock",
+	"Plugins": [
+		{
+			"Name": "LTween",
+			"Enabled": true
 		}
 	]
 }

@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright (c) 2022 Dream Moon. All Rights Reserved.
 
 
 #include "Components/DreamTextChar.h"
@@ -26,14 +26,25 @@ void UDreamTextChar::SetFont(FSlateFontInfo InFont)
 	TextBlock->SetFont(InFont);
 }
 
-void UDreamTextChar::SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting)
+void UDreamTextChar::SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting, bool bInitialize)
 {
-	InitializeAnimation(InAnimationSetting);
+	if (bInitialize)
+	{
+		InitializeAnimation(InAnimationSetting);
+	}
+	else
+	{
+		AnimationSetting = InAnimationSetting;
+	}
 }
 
 void UDreamTextChar::InitializeAnimation(UDreamTextBlockAnimationSetting* InAnimationSetting, bool bEndState)
 {
-	if (!InAnimationSetting) return;
+	if (!InAnimationSetting)
+	{
+		return;
+	}
+	
 	AnimationSetting = InAnimationSetting;
 	bPlaying = false;
 
@@ -63,11 +74,11 @@ void UDreamTextChar::PlayAnimationWithCustomDuration(float AnimationDuration)
 	Tweeners.Add(ULTweenBPLibrary::UMG_RenderTransform_ScaleTo(GWorld, TextBlock, AnimationSetting->End.Scale, AnimationDuration, 0.f, AnimationSetting->Ease));
 	Tweeners.Add(ULTweenBPLibrary::UMG_RenderTransform_ShearTo(GWorld, TextBlock, AnimationSetting->End.Shear, AnimationDuration, 0.f, AnimationSetting->Ease));
 	Tweeners.Add(ULTweenBPLibrary::UMG_RenderTransform_AngleTo(GWorld, TextBlock, AnimationSetting->End.Angle, AnimationDuration, 0.f, AnimationSetting->Ease));
-
 	
 	GWorld->GetTimerManager().SetTimer(TimerHandle, [this]()
 	{
 		Tweeners.Empty();
+		OnAnimationCompletedCpp.ExecuteIfBound();
 	}, AnimationDuration, false);
 	
 	if (AnimationSetting->Ease == ELTweenEase::CurveFloat)
@@ -81,7 +92,7 @@ void UDreamTextChar::PlayAnimationWithCustomDuration(float AnimationDuration)
 	bPlaying = true;
 }
 
-void UDreamTextChar::StopAnim(bool bReset, bool bEndState)
+void UDreamTextChar::StopAnim(bool bReset, bool bEndState, bool bCallCompleted)
 {
 	if (bPlaying)
 	{
@@ -100,4 +111,7 @@ void UDreamTextChar::StopAnim(bool bReset, bool bEndState)
 
 	if (bReset)
 		InitializeAnimation(AnimationSetting, bEndState);
+
+	if (bCallCompleted)
+		OnAnimationCompletedCpp.ExecuteIfBound();
 }

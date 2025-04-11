@@ -1,8 +1,9 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright (c) 2022 Dream Moon. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DreamAnimationTextBlockTools.h"
 #include "Blueprint/UserWidget.h"
 #include "DreamTextChar.generated.h"
 
@@ -24,6 +25,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDreamTextBlockAnimationSetting* AnimationSetting = nullptr;
+
 public:
 	/**
 	 * 设置字符
@@ -42,9 +44,10 @@ public:
 	/**
 	 * 设置动画设置
 	 * @param InAnimationSetting 新的动画设置
+	 * @param bInitialize 是否初始化动画
 	 */
 	UFUNCTION(BlueprintCallable)
-	void SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting);
+	void SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting, bool bInitialize = true);
 
 	/**
 	 * 初始化动画
@@ -65,9 +68,10 @@ public:
 	 * 停止动画
 	 * @param bReset 重置动画
 	 * @param bEndState 是否重置为结束状态
+	 * @param bCallCompleted 是否调用动画完成事件
 	 */
 	UFUNCTION(BlueprintCallable)
-	void StopAnim(bool bReset = true, bool bEndState = true);
+	void StopAnim(bool bReset = true, bool bEndState = true, bool bCallCompleted = false);
 
 	/**
 	 * 当前动画是否正在播放
@@ -75,13 +79,16 @@ public:
 	 */
 	UFUNCTION(BlueprintPure)
 	bool IsAnimPlaying() const { return bPlaying; }
+
+	FSimpleDelegate OnAnimationCompletedCpp;
+
 public:
 	UPROPERTY(BlueprintReadOnly)
 	FString Char;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bPlaying = false;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	TArray<ULTweener*> Tweeners;
 

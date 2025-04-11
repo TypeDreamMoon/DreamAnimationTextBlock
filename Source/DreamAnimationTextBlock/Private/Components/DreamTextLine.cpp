@@ -1,13 +1,12 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright (c) 2022 Dream Moon. All Rights Reserved.
 
 
 #include "Components/DreamTextLine.h"
 
-#include "Components/HorizontalBox.h"
 #include "Components/WrapBox.h"
 
 
-UDreamTextChar* UDreamTextLine::PushChar(FString Char)
+UDreamTextChar* UDreamTextLine::PushChar(FString Char, bool bInitializeAnimation)
 {
 	// 1. 检查CharWidgetClass是否有效
 	if (CharWidgetClass.IsNull())
@@ -49,7 +48,7 @@ UDreamTextChar* UDreamTextLine::PushChar(FString Char)
 	// 设置字符和字体
 	CharWidget->SetChar(Char);
 	CharWidget->SetFont(Font);
-	CharWidget->SetAnimationSetting(AnimationSetting);
+	CharWidget->SetAnimationSetting(AnimationSetting, bInitializeAnimation);
 
 	// 6. 添加控件到WrapBoxSlot并检查Slot
 	UWrapBoxSlot* WrapBoxSlot = WrapBox->AddChildToWrapBox(CharWidget);

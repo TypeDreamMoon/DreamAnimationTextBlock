@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Copyright (c) 2022 Dream Moon. All Rights Reserved.
+
+#pragma once
 
 #include "CoreMinimal.h"
 #include "TimerManager.h"
@@ -90,4 +92,6 @@ namespace FDreamAnimationTextBlockTools
 
 		return Handle;
 	}
+
+
 };
