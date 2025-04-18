@@ -91,6 +91,27 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsAnimPlaying() const;
 
+	/**
+	 * 获取文本字符个数
+	 * @return 字符个数
+	 */
+	UFUNCTION(BlueprintPure)
+	int32 GetTextNum() const { return TextChars.Num(); }
+
+	/**
+	 * 获取文本
+	 * @return 文本
+	 */
+	UFUNCTION(BlueprintPure)
+	FText GetText() const { return Text; }
+
+	/**
+	 * 获取字体
+	 * @return 字体
+	 */
+	UFUNCTION(BlueprintPure)
+	FSlateFontInfo GetFont() const { return Font; }
+
 	DECLARE_DYNAMIC_DELEGATE(FDreamTextBlockSimpleDelegate);
 
 	/**
@@ -99,6 +120,21 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void OnLastCharAnimationCompleted(const FDreamTextBlockSimpleDelegate& Delegate);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDreamTextBlockCharDelegate, UDreamTextChar*, Char);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDreamTextBlockDelegate);
+
+	/**
+	 * 字符动画播放时
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FDreamTextBlockCharDelegate OnCharAnimPlay;
+
+	/**
+	 * 动画播放结束时
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FDreamTextBlockDelegate OnAnimCompleted;
 
 protected:
 	virtual void NativePreConstruct() override;

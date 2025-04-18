@@ -20,6 +20,10 @@ void UDreamTextBlock::PlayAnimWithDuration(float InDuration)
 		GWorld, TextChars, InDuration, [this](UDreamTextChar* Element)
 		{
 			Element->PlayAnimationWithCustomDuration(AnimationDuration);
+			OnCharAnimPlay.Broadcast(Element);
+		},[this]()
+		{
+			OnAnimCompleted.Broadcast();
 		});
 }
 

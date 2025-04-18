@@ -20,17 +20,29 @@ namespace FDreamAnimationTextBlockTools
 	{
 		const TArrayType* ArrayPtr = nullptr;
 		TFunction<void(ElementType)> Callback;
+		TFunction<void()> CompletedCallback;
 
 		void ProcessNext(TSharedRef<TDelayState> Self, FTimerHandle& TimerHandle)
 		{
+			// 如果取消了，则直接执行完成回调
 			if (bCanceled || !WorldContextObject.IsValid() || !ArrayPtr || Index >= ArrayPtr->Num())
+			{
+				CompletedCallback();
 				return;
+			}
 
+			// 执行回调
 			Callback((*ArrayPtr)[Index]);
 			Index++;
 
-			if (Index >= ArrayPtr->Num() || bCanceled) return;
+			// 如果已经结束，则直接执行完成回调
+			if (Index >= ArrayPtr->Num() || bCanceled)
+			{
+				CompletedCallback();
+				return;
+			}
 
+			// 启动下一次的定时器
 			if (UWorld* World = WorldContextObject->GetWorld())
 			{
 				World->GetTimerManager().SetTimer(
@@ -70,7 +82,8 @@ namespace FDreamAnimationTextBlockTools
 		UObject* WorldContextObject,
 		const TArrayType& Array,
 		float DelayBetweenElements,
-		TFunction<void(ElementType)> OnElementProcessed
+		TFunction<void(ElementType)> OnElementProcessed,
+		TFunction<void()> OnCompletedProcessed = nullptr
 	)
 	{
 		FForEachWithDelayHandle Handle;
@@ -84,6 +97,7 @@ namespace FDreamAnimationTextBlockTools
 		State->WorldContextObject = WorldContextObject;
 		State->ArrayPtr = &Array;
 		State->Callback = OnElementProcessed;
+		State->CompletedCallback = OnCompletedProcessed;
 		State->Delay = DelayBetweenElements;
 		State->Index = 0;
 
