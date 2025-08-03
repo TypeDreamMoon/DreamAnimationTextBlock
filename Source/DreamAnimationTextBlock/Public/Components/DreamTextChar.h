@@ -7,8 +7,9 @@
 #include "Blueprint/UserWidget.h"
 #include "DreamTextChar.generated.h"
 
-class ULTweener;
-class ULTweenerSequence;
+class UWrapBox;
+class UDreamWidgetTweener;
+class UDreamWidgetTweenerSequence;
 class UDreamTextBlockAnimationSetting;
 class UTextBlock;
 /**
@@ -25,6 +26,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDreamTextBlockAnimationSetting* AnimationSetting = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Setter="SetTextPadding", Getter="GetTextPadding")
+	FVector2D TextPadding = FVector2D(0.f, 0.f);
 
 public:
 	/**
@@ -80,6 +84,12 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsAnimPlaying() const { return bPlaying; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetTextPadding(FVector2D NewPadding);
+
+	UFUNCTION(BlueprintPure)
+	FVector2D GetTextPadding() const;
+
 	FSimpleDelegate OnAnimationCompletedCpp;
 
 public:
@@ -90,7 +100,7 @@ public:
 	bool bPlaying = false;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<ULTweener*> Tweeners;
+	TArray<UDreamWidgetTweener*> Tweeners;
 
 	UPROPERTY(BlueprintReadOnly)
 	FTimerHandle TimerHandle;

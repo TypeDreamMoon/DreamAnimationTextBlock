@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DreamAnimationTextBlockTypes.h"
-#include "LTweener.h"
+#include "DreamWidgetTweener.h"
 #include "Engine/DataAsset.h"
 #include "DreamTextBlockAnimationSetting.generated.h"
 
@@ -24,8 +24,8 @@ public:
 	FDreamTextAnimationSet End = FDreamTextAnimationSet();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ELTweenEase Ease = ELTweenEase::OutCubic;
+	EDreamWidgetTweenEase Ease = EDreamWidgetTweenEase::OutCubic;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (EditCondition = "Ease==ELTweenEase::CurveFloat", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (EditCondition = "Ease==EDreamWidgetTweenEase::CurveFloat", EditConditionHides))
 	UCurveFloat* CurveFloat = nullptr;
 };

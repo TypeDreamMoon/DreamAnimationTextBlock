@@ -27,7 +27,6 @@ public class DreamAnimationTextBlock : ModuleRules
 			{
 				"Core",
 				"UMG",
-				"LTween", // 
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

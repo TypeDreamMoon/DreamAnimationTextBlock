@@ -4,9 +4,11 @@
 #include "Components/DreamTextChar.h"
 
 #include "DreamTextBlockAnimationSetting.h"
-#include "LTweenBPLibrary.h"
-#include "LTweenerSequence.h"
+#include "DreamWidgetTweener.h"
+#include "DreamWidgetTweenLibrary.h"
 #include "Components/TextBlock.h"
+#include "Components/WrapBox.h"
+#include "Components/WrapBoxSlot.h"
 
 void UDreamTextChar::SetChar(FString InChar)
 {
@@ -44,7 +46,7 @@ void UDreamTextChar::InitializeAnimation(UDreamTextBlockAnimationSetting* InAnim
 	{
 		return;
 	}
-	
+
 	AnimationSetting = InAnimationSetting;
 	bPlaying = false;
 
@@ -56,6 +58,8 @@ void UDreamTextChar::InitializeAnimation(UDreamTextBlockAnimationSetting* InAnim
 	));
 
 	TextBlock->SetRenderOpacity(bEndState ? AnimationSetting->End.Opacity : AnimationSetting->Start.Opacity);
+
+	SetTextPadding(bEndState ? AnimationSetting->End.Padding : AnimationSetting->Start.Padding);
 }
 
 void UDreamTextChar::PlayAnimationWithCustomDuration(float AnimationDuration)
@@ -69,19 +73,20 @@ void UDreamTextChar::PlayAnimationWithCustomDuration(float AnimationDuration)
 
 	InitializeAnimation(AnimationSetting, false);
 
-	Tweeners.Add(ULTweenBPLibrary::UMG_RenderOpacityTo(GWorld, TextBlock, AnimationSetting->End.Opacity, AnimationDuration, 0.f, AnimationSetting->Ease));
-	Tweeners.Add(ULTweenBPLibrary::UMG_RenderTransform_TranslationTo(GWorld, TextBlock, AnimationSetting->End.Translation, AnimationDuration, 0.f, AnimationSetting->Ease));
-	Tweeners.Add(ULTweenBPLibrary::UMG_RenderTransform_ScaleTo(GWorld, TextBlock, AnimationSetting->End.Scale, AnimationDuration, 0.f, AnimationSetting->Ease));
-	Tweeners.Add(ULTweenBPLibrary::UMG_RenderTransform_ShearTo(GWorld, TextBlock, AnimationSetting->End.Shear, AnimationDuration, 0.f, AnimationSetting->Ease));
-	Tweeners.Add(ULTweenBPLibrary::UMG_RenderTransform_AngleTo(GWorld, TextBlock, AnimationSetting->End.Angle, AnimationDuration, 0.f, AnimationSetting->Ease));
-	
+	Tweeners.Add(UDreamWidgetTweenLibrary::UMG_DreamAnimTextCharPaddingTo(GWorld, this, AnimationSetting->End.Padding, AnimationDuration, 0.f, AnimationSetting->Ease));
+	Tweeners.Add(UDreamWidgetTweenLibrary::UMG_RenderOpacityTo(GWorld, TextBlock, AnimationSetting->End.Opacity, AnimationDuration, 0.f, AnimationSetting->Ease));
+	Tweeners.Add(UDreamWidgetTweenLibrary::UMG_RenderTransform_TranslationTo(GWorld, TextBlock, AnimationSetting->End.Translation, AnimationDuration, 0.f, AnimationSetting->Ease));
+	Tweeners.Add(UDreamWidgetTweenLibrary::UMG_RenderTransform_ScaleTo(GWorld, TextBlock, AnimationSetting->End.Scale, AnimationDuration, 0.f, AnimationSetting->Ease));
+	Tweeners.Add(UDreamWidgetTweenLibrary::UMG_RenderTransform_ShearTo(GWorld, TextBlock, AnimationSetting->End.Shear, AnimationDuration, 0.f, AnimationSetting->Ease));
+	Tweeners.Add(UDreamWidgetTweenLibrary::UMG_RenderTransform_AngleTo(GWorld, TextBlock, AnimationSetting->End.Angle, AnimationDuration, 0.f, AnimationSetting->Ease));
+
 	GWorld->GetTimerManager().SetTimer(TimerHandle, [this]()
 	{
 		Tweeners.Empty();
 		OnAnimationCompletedCpp.ExecuteIfBound();
 	}, AnimationDuration, false);
-	
-	if (AnimationSetting->Ease == ELTweenEase::CurveFloat)
+
+	if (AnimationSetting->Ease == EDreamWidgetTweenEase::CurveFloat)
 	{
 		for (auto Element : Tweeners)
 		{
@@ -114,4 +119,15 @@ void UDreamTextChar::StopAnim(bool bReset, bool bEndState, bool bCallCompleted)
 
 	if (bCallCompleted)
 		OnAnimationCompletedCpp.ExecuteIfBound();
+}
+
+void UDreamTextChar::SetTextPadding(FVector2D NewPadding)
+{
+	TextPadding = NewPadding;
+	Cast<UWrapBoxSlot>(Slot)->SetPadding(FMargin(NewPadding.X, NewPadding.Y));
+}
+
+FVector2D UDreamTextChar::GetTextPadding() const
+{
+	return TextPadding;
 }
