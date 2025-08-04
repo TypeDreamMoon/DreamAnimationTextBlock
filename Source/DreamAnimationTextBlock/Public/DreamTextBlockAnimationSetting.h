@@ -17,15 +17,15 @@ class DREAMANIMATIONTEXTBLOCK_API UDreamTextBlockAnimationSetting : public UPrim
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DreamTextBlockAnimationSetting")
 	FDreamTextAnimationSet Start = FDreamTextAnimationSet();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DreamTextBlockAnimationSetting")
 	FDreamTextAnimationSet End = FDreamTextAnimationSet();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DreamTextBlockAnimationSetting")
 	EDreamWidgetTweenEase Ease = EDreamWidgetTweenEase::OutCubic;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (EditCondition = "Ease==EDreamWidgetTweenEase::CurveFloat", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (EditCondition = "Ease==EDreamWidgetTweenEase::CurveFloat", EditConditionHides), Category = "DreamTextBlockAnimationSetting")
 	UCurveFloat* CurveFloat = nullptr;
 };

@@ -3,6 +3,8 @@
 
 #include "DreamWidgetTweener.h"
 #include "Curves/CurveFloat.h"
+#include "Engine/World.h"
+#include "Engine/GameInstance.h"
 
 UDreamWidgetTweener::UDreamWidgetTweener()
 {

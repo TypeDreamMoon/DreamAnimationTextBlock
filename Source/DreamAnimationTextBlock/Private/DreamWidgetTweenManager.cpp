@@ -15,6 +15,7 @@
 
 #include "Engine/World.h"
 #include "Engine/Engine.h"
+#include "Engine/GameInstance.h"
 #include "Tweener/DreamWidgetTweenerVector2D.h"
 
 UDreamWidgetTweenTickHelperComponent::UDreamWidgetTweenTickHelperComponent()
