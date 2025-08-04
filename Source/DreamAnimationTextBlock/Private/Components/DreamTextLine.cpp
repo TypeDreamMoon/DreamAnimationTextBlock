@@ -8,14 +8,12 @@
 
 UDreamTextChar* UDreamTextLine::PushChar(FString Char, bool bInitializeAnimation)
 {
-	// 1. 检查CharWidgetClass是否有效
 	if (CharWidgetClass.IsNull())
 	{
 		UE_LOG(LogTemp, Error, TEXT("CharWidgetClass is null"));
 		return nullptr;
 	}
 
-	// 2. 同步加载Widget类并检查有效性
 	UClass* WidgetClass = CharWidgetClass.LoadSynchronous();
 	if (!WidgetClass)
 	{
@@ -23,7 +21,6 @@ UDreamTextChar* UDreamTextLine::PushChar(FString Char, bool bInitializeAnimation
 		return nullptr;
 	}
 
-	// 3. 创建CharWidget实例并检查有效性
 	UDreamTextChar* CharWidget = CreateWidget<UDreamTextChar>(this, WidgetClass);
 	if (!CharWidget)
 	{
@@ -31,14 +28,20 @@ UDreamTextChar* UDreamTextLine::PushChar(FString Char, bool bInitializeAnimation
 		return nullptr;
 	}
 
-	// 4. 检查HorizontalBox是否绑定
 	if (!WrapBox)
 	{
 		UE_LOG(LogTemp, Error, TEXT("HorizontalBox is not bound"));
 		return nullptr;
 	}
 
-	// 5. 调用SetChar前检查TextBlock是否有效（需在DreamTextChar.h中调整）
+	// Add to WrapBox first so Slot is assigned
+	UWrapBoxSlot* WrapBoxSlot = WrapBox->AddChildToWrapBox(CharWidget);
+	if (!WrapBoxSlot)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to add CharWidget to WrapBox"));
+		return nullptr;
+	}
+
 	if (!CharWidget->TextBlock)
 	{
 		UE_LOG(LogTemp, Error, TEXT("TextBlock is not bound in DreamTextChar"));
@@ -49,14 +52,6 @@ UDreamTextChar* UDreamTextLine::PushChar(FString Char, bool bInitializeAnimation
 	CharWidget->SetChar(Char);
 	CharWidget->SetFont(Font);
 	CharWidget->SetAnimationSetting(AnimationSetting, bInitializeAnimation);
-
-	// 6. 添加控件到WrapBoxSlot并检查Slot
-	UWrapBoxSlot* WrapBoxSlot = WrapBox->AddChildToWrapBox(CharWidget);
-	if (!WrapBoxSlot)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to add CharWidget to HorizontalBox"));
-		return nullptr;
-	}
 
 	return CharWidget;
 }
@@ -70,4 +65,3 @@ void UDreamTextLine::SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnim
 {
 	AnimationSetting = InAnimationSetting;
 }
-

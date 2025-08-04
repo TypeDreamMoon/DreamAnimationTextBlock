@@ -60,9 +60,15 @@ namespace
 	}
 }
 
-void UDreamTextBlock::SetText(FText InText)
+void UDreamTextBlock::SetText(FText InText, bool bInitializeAnimation)
 {
-	Internal_SetText(InText, false);
+	Internal_SetText(InText, bInitializeAnimation);
+}
+
+void UDreamTextBlock::SetTextAndPlayAnimation(FText InText)
+{
+	SetText(InText, true);
+	PlayAnim();
 }
 
 void UDreamTextBlock::PlayAnimWithDuration(float InDuration, EDreamTextAnimationPlayType InPlayType)
@@ -395,7 +401,7 @@ void UDreamTextBlock::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
-	Internal_SetText(Text, true);
+	Internal_SetText(Text, false);
 }
 
 void UDreamTextBlock::NativeConstruct()
@@ -439,16 +445,16 @@ UDreamTextLine* UDreamTextBlock::CreateNewLine()
 	return LineWidget;
 }
 
-void UDreamTextBlock::Internal_SetText(FText InText, bool bIsPreConstruct)
+void UDreamTextBlock::Internal_SetText(FText InText, bool bInitializeAnimation)
 {
 	Text = InText;
 	FString StrText = Text.ToString();
 
 	ClearProperty();
 
-	auto Push = [this, bIsPreConstruct](const FString& InChar)
+	auto Push = [this, bInitializeAnimation](const FString& InChar)
 	{
-		UDreamTextChar* CharWidget = CurrentTextLine->PushChar(InChar, !bIsPreConstruct);
+		UDreamTextChar* CharWidget = CurrentTextLine->PushChar(InChar, bInitializeAnimation);
 		CharWidget->SetTextPadding(TextPadding);
 		return CharWidget;
 	};

@@ -124,7 +124,10 @@ void UDreamTextChar::StopAnim(bool bReset, bool bEndState, bool bCallCompleted)
 void UDreamTextChar::SetTextPadding(FVector2D NewPadding)
 {
 	TextPadding = NewPadding;
-	Cast<UWrapBoxSlot>(Slot)->SetPadding(FMargin(NewPadding.X, NewPadding.Y));
+	if (UWrapBoxSlot* WrapSlot = Cast<UWrapBoxSlot>(Slot))
+	{
+		WrapSlot->SetPadding(FMargin(NewPadding.X, NewPadding.Y));
+	}
 }
 
 FVector2D UDreamTextChar::GetTextPadding() const
