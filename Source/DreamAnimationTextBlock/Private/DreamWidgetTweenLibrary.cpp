@@ -6,6 +6,8 @@
 #include "Components/SceneComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Components/MeshComponent.h"
+#include "Engine/World.h"
+#include "Engine/GameInstance.h"
 
 #pragma region UMG
 
