@@ -199,6 +199,14 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="DreamTextBlock|Animation")
 	void InitializeAnimation();
+	
+	/**
+	 * 设置动画设置对象。
+	 * @param InAnimationSetting 动画设置对象
+	 * @param bInitializeAnimation 是否初始化动画数据
+	 */
+	UFUNCTION(BlueprintCallable, Category="DreamTextBlock|Animation")
+	void SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting, bool bInitializeAnimation = true);
 
 	DECLARE_DYNAMIC_DELEGATE(FDreamTextBlockSimpleDelegate);
 

@@ -389,6 +389,14 @@ void UDreamTextBlock::InitializeAnimation()
 	}
 }
 
+void UDreamTextBlock::SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting, bool bInitializeAnimation)
+{
+	for (auto Element : TextLines)
+	{
+		Element->SetAnimationSetting(InAnimationSetting, bInitializeAnimation);
+	}
+}
+
 void UDreamTextBlock::OnLastCharAnimationCompleted(const FDreamTextBlockSimpleDelegate& Delegate)
 {
 	TextChars.Last()->OnAnimationCompletedCpp.BindLambda([Delegate]()

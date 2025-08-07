@@ -52,7 +52,11 @@ public:
     /**
      * 设置动画设置
      * @param InAnimationSetting 动画设置
+     * @param bInitializeAnimation 是否初始化动画
      */
     UFUNCTION(BlueprintCallable, Category="DreamTextLine|Animation")
-    void SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting);
+    void SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting, bool bInitializeAnimation = true);
+
+protected:
+    TArray<TWeakObjectPtr<UDreamTextChar>> Chars;
 };

@@ -53,6 +53,8 @@ UDreamTextChar* UDreamTextLine::PushChar(FString Char, bool bInitializeAnimation
 	CharWidget->SetFont(Font);
 	CharWidget->SetAnimationSetting(AnimationSetting, bInitializeAnimation);
 
+	Chars.Add(MakeWeakObjectPtr(CharWidget));
+
 	return CharWidget;
 }
 
@@ -61,7 +63,14 @@ void UDreamTextLine::SetFont(FSlateFontInfo InFont)
 	Font = InFont;
 }
 
-void UDreamTextLine::SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting)
+void UDreamTextLine::SetAnimationSetting(UDreamTextBlockAnimationSetting* InAnimationSetting, bool bInitializeAnimation)
 {
 	AnimationSetting = InAnimationSetting;
+	for (auto CharWidget : Chars)
+	{
+		if (CharWidget.IsValid())
+		{
+			CharWidget->SetAnimationSetting(AnimationSetting, bInitializeAnimation);
+		}
+	}
 }
